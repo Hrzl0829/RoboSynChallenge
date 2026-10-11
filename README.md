@@ -201,9 +201,25 @@ train_config.json
   --python /opt/miniconda3/envs/robosyn/bin/python
 ```
 
-## 9. 运行评测
+## 9. 硬件与复现记录
 
-### 9.1 通用命令
+| 项目                  | 内容                                                         |
+| --------------------- | ------------------------------------------------------------ |
+| GPU 型号与数量        | **2 × NVIDIA GeForce RTX 4090，每张 24,564 MiB；单次评测通过 `--gpu_id` 使用其中一张** |
+| CPU                   | **Intel Core i7-14700F，20核28线程**                         |
+| 内存                  | **128 GB**                                                   |
+| 操作系统              | **Ubuntu 22.04 LTS，内核 `6.8.0-138-generic`**               |
+| NVIDIA 驱动版本       | **`580.173.02`**                                             |
+| CUDA 版本             | **`CUDA 12.6`**                                              |
+| Python 版本           | **`3.11.15`**                                                |
+| PyTorch 版本          | **`2.7.1`**                                                  |
+| LeRobot 版本 / commit | **`0.3.3` / `b883328e6c95681ca90a18b102e4ae5e1f91e2bf`**     |
+| EmbodiChain 版本      | **`v0.2.4`**                                                 |
+| EmbodiChain commit    | **`9ebee30011f378f94a7cbe78b01d8c2eacba231a`**               |
+
+## 10. 运行评测
+
+### 10.0 通用命令
 
 ```bash
 PYTHONUNBUFFERED=1 \
@@ -227,34 +243,113 @@ bash policy/act/eval.sh \
 - `seed`：随机种子，可选；
 - `gpu_id`：使用的 GPU 编号，可选。
 
-### 9.2 `click_bell` 示例
+### 10.1 `click_bell` 
 
 ```bash
-PYTHONUNBUFFERED=1 \
-PYTHONFAULTHANDLER=1 \
-bash policy/act/eval.sh \
-  click_bell \
-  random \
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh click_bell random \
   ./checkpoints/click_bell \
-  0 \
-  --gpu_id 0 \
-  --max_episodes 1 \
-  --headless True \
-  --eval_video_log True
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/click_bell_random_100_gpu0.log
 ```
 
-## 10. 硬件与复现记录
+### 10.2 `drawer_open_place` 
 
-| 项目                  | 内容                                                         |
-| --------------------- | ------------------------------------------------------------ |
-| GPU 型号与数量        | **2 × NVIDIA GeForce RTX 4090，每张 24,564 MiB；单次评测通过 `--gpu_id` 使用其中一张** |
-| CPU                   | **Intel Core i7-14700F，20核28线程**                         |
-| 内存                  | **128 GB**                                                   |
-| 操作系统              | **Ubuntu 22.04 LTS，内核 `6.8.0-138-generic`**               |
-| NVIDIA 驱动版本       | **`580.173.02`**                                             |
-| CUDA 版本             | **`CUDA 12.6`**                                              |
-| Python 版本           | **`3.11.15`**                                                |
-| PyTorch 版本          | **`2.7.1`**                                                  |
-| LeRobot 版本 / commit | **`0.3.3` / `b883328e6c95681ca90a18b102e4ae5e1f91e2bf`**     |
-| EmbodiChain 版本      | **`v0.2.4`**                                                 |
-| EmbodiChain commit    | **`9ebee30011f378f94a7cbe78b01d8c2eacba231a`**               |
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh drawer_open_place random \
+  ./checkpoints/drawer_open_place \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/drawer_open_place_random_100_gpu0.log
+```
+
+### 10.3 `handle_basket` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh handle_basket random \
+  ./checkpoints/handle_basket \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/handle_basket_random_100_gpu0.log
+```
+
+### 10.4 `item_assembly` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh item_assembly random \
+  ./checkpoints/item_assembly \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/item_assembly_random_100_gpu0.log
+```
+
+### 10.5 `items_handover` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh items_handover random \
+  ./checkpoints/items_handover \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/items_handover_random_100_gpu0.log
+```
+
+### 10.6 `manipulate_pipette` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh manipulate_pipette random \
+  ./checkpoints/manipulate_pipette \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/manipulate_pipette_random_100_gpu0.log
+```
+
+### 10.7 `mixer_operating` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh mixer_operating random \
+  ./checkpoints/mixer_operating \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/mixer_operating_random_100_gpu0.log
+```
+
+### 10.8 `sample_loading` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh sample_loading random \
+  ./checkpoints/sample_loading \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/sample_loading_random_100_gpu0.log
+```
+
+### 10.9 `table_rearrangement` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh table_rearrangement random \
+  ./checkpoints/table_rearrangement \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/table_rearrangement_random_100_gpu0.log
+```
+
+### 10.10 `water_pouring` 
+
+```bash
+PYTHONUNBUFFERED=1 PYTHONFAULTHANDLER=1 \
+bash policy/act/eval.sh water_pouring random \
+  ./checkpoints/water_pouring \
+  0 --gpu_id 0 --max_episodes 100 \
+  --headless True --eval_video_log True \
+  2>&1 | tee logs/water_pouring_random_100_gpu0.log
+```
+
