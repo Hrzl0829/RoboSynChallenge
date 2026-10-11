@@ -20,7 +20,7 @@
 | 比赛主页 | [RoboSynChallenge](https://robosyn-bench.net/) |
 | 基础模型名称 | ACT（基于 LeRobot 实现） |
 | 代码仓库 | **[Hrzl0829/RoboSynChallenge](https://github.com/Hrzl0829/RoboSynChallenge)** |
-| 模型仓库 | [Hrzl1467/RobosynChallenge](https://huggingface.co/Hrzl1467/RobosynChallenge) |
+| 模型仓库 | [Hrzl1467/RobosynChallengeCheckpoints · Hugging Face](https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints) |
 | 是否参与排行榜 | **是** |
 
 ### 方法简介
@@ -41,23 +41,23 @@
 
 十个任务的模型放在同一个 Hugging Face 仓库中，每个任务使用独立目录。
 
-| 序号 | 任务标识 | Hugging Face 模型地址 |
-| ---: | --- | --- |
-| 1 | `table_rearrangement` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/table_rearrangement |
-| 2 | `click_bell` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/click_bell |
-| 3 | `water_pouring` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/water_pouring |
-| 4 | `handle_basket` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/handle_basket |
-| 5 | `items_handover`      | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/items_handover |
-| 6 | `drawer_open_place` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/drawer_open_place |
-| 7 | `mixer_operating` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/mixer_operating |
-| 8 | `item_assembly` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/item_assembly |
-| 9 | `manipulate_pipette` | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/manipulate_pipette |
-| 10 | `sample_loading`      | https://huggingface.co/Hrzl1467/RobosynChallenge/tree/main/sample_loading |
+| 任务标识 | Hugging Face 模型地址 |
+| --- | --- |
+| `table_rearrangement` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/table_rearrangement |
+| `click_bell` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/click_bell |
+| `water_pouring` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/water_pouring |
+| `handle_basket` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/handle_basket |
+| `items_handover`      | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/items_handover |
+| `drawer_open_place` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/drawer_open_place |
+| `mixer_operating` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/mixer_operating |
+| `item_assembly` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/item_assembly |
+| `manipulate_pipette` | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/manipulate_pipette |
+| `sample_loading`      | https://huggingface.co/Hrzl1467/RobosynChallengeCheckpoints/tree/main/sample_loading |
 
 ### 4.1 推荐的模型仓库结构
 
 ```text
-Hrzl1467/RobosynChallenge
+Hrzl1467/RobosynChallengeCheckpoints
 ├── table_rearrangement/
 │   ├── config.json
 │   ├── model.safetensors
@@ -169,35 +169,21 @@ pip install -e ./policy/act
 
 如项目依赖本地 EmbodiChain，请先按照 [`docs/getting_started/installation.md`](docs/getting_started/installation.md) 完成其安装，并确认 `policy/act/pyproject.toml` 中的本地路径与实际环境一致。
 
-## 8. 下载 Hugging Face 模型
+## 8. 环境配置
 
-### 8.1 登录
+### 8.1 下载Hugging Face全部任务模型
 
-如果模型仓库为私有或受限仓库，先完成登录：
-
-```bash
-huggingface-cli login
-```
-
-### 8.2 下载全部任务模型
+在RoboSynChallenge目录下下载任务模型：
 
 ```bash
-huggingface-cli download Hrzl1467/RobosynChallenge \
-  --revision a498ac58d95192d848db28752df77eb6f7d37670 \
-  --local-dir ./checkpoints/RobosynChallenge
+HF_ENDPOINT=https://hf-mirror.com \
+hf download Hrzl1467/RobosynChallengeCheckpoints \
+  --repo-type model \
+  --local-dir ./checkpoints \
+  --max-workers 2
 ```
 
-### 8.3 只下载单个任务
-
-以下示例仅下载 `click_bell`：
-
-```bash
-huggingface-cli download Hrzl1467/RobosynChallenge \
-  --include "click_bell/*" \
-  --local-dir ./checkpoints/RobosynChallenge
-```
-
-下载完成后，请确认目标目录内存在：
+下载完成后，请确认各任务目录内存在：
 
 ```text
 config.json
@@ -205,17 +191,32 @@ model.safetensors
 train_config.json
 ```
 
+### 8.2 配置ACT环境
+
+如果没有ACT环境需要先配置环境：
+
+```bash
+/opt/miniconda3/envs/robosyn/bin/uv sync \
+  --locked \
+  --python /opt/miniconda3/envs/robosyn/bin/python
+```
+
 ## 9. 运行评测
 
 ### 9.1 通用命令
 
 ```bash
+PYTHONUNBUFFERED=1 \
+PYTHONFAULTHANDLER=1 \
 bash policy/act/eval.sh \
   <task_name> \
   <random|clear> \
   <checkpoint_path> \
   [seed] \
-  [gpu_id]
+  [gpu_id] \
+  --max_episodes 100 \
+  --headless True \
+  --eval_video_log True
 ```
 
 参数说明：
@@ -229,12 +230,17 @@ bash policy/act/eval.sh \
 ### 9.2 `click_bell` 示例
 
 ```bash
+PYTHONUNBUFFERED=1 \
+PYTHONFAULTHANDLER=1 \
 bash policy/act/eval.sh \
   click_bell \
   random \
-  ./checkpoints/RobosynChallenge/click_bell \
+  ./checkpoints/click_bell \
   0 \
-  0
+  --gpu_id 0 \
+  --max_episodes 1 \
+  --headless True \
+  --eval_video_log True
 ```
 
 ## 10. 硬件与复现记录
@@ -248,7 +254,7 @@ bash policy/act/eval.sh \
 | NVIDIA 驱动版本       | **`580.173.02`**                                             |
 | CUDA 版本             | **`CUDA 12.6`**                                              |
 | Python 版本           | **`3.11.15`**                                                |
-| PyTorch 版本          | **`2.7.1` + cu126**                                          |
+| PyTorch 版本          | **`2.7.1`**                                                  |
 | LeRobot 版本 / commit | **`0.3.3` / `b883328e6c95681ca90a18b102e4ae5e1f91e2bf`**     |
 | EmbodiChain 版本      | **`v0.2.4`**                                                 |
 | EmbodiChain commit    | **`9ebee30011f378f94a7cbe78b01d8c2eacba231a`**               |
